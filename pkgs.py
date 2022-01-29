@@ -45,10 +45,10 @@ def get_mods_for_file(path, paths_processed):
         finder.run_script(path)
     except SyntaxError as e:
         print(f"ERROR: Could not parse python file at path: {path}; Syntax error: {e}. Check the python version.\n")
-        return modules
+        return modules, ext_modules
     except Exception as e:
         print(f"ERROR: Got exception trying to parse path {path}; error: {e}; skipping...\n")
-        return modules
+        return modules, ext_modules
 
     for name, mod in finder.modules.items():
         if name.startswith('_'):
@@ -70,7 +70,7 @@ def get_mods_for_file(path, paths_processed):
             continue
         ext_modules.add(name)
     
-    paths_processed.appendd(path)
+    paths_processed.append(path)
     return modules, ext_modules
 
 

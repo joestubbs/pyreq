@@ -6,6 +6,7 @@
 
 from taccsciapps/jupyteruser-ds:1.2.24
 
+USER root
 ADD requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 

@@ -2,7 +2,6 @@ pyreqs
 ======
 Utility to determine the 3rd-party packages of a specific python script. Can combine with nbconvert to analyze jupyter notebooks as well.
 
-
 High-Level Algorithm: 
 
 1. Convert the jupyter notebook file to a python script. This can be achieved with nbcovert:
@@ -11,6 +10,5 @@ High-Level Algorithm:
 2. Use python modulefinder class to analysis the modules used in the script (see: https://docs.python.org/3/library/modulefinder.html)
 
 3. Check the list generated in Step 2 against the list of known modules from the standard library. 
-This step requires knowing the specific version of the standard library we want to check against. The stdlib_list package can be used 
-here (https://pypi.org/project/stdlib-list/). 
+This step requires knowing the specific version of the standard library we want to check against. The stdlib_list package can be used here (https://pypi.org/project/stdlib-list/). 
 
