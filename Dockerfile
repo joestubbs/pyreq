@@ -4,7 +4,7 @@
 # (directory) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data jstubbs/pypkgs
 
 
-from tapis/jupyter
+from taccsciapps/jupyteruser-ds:1.2.24
 
 ADD requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
