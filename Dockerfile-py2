@@ -1,8 +1,11 @@
-# Image: jstubbs/pypkgs
+# Image: jstubbs/pypkgspy2
 # Run with: 
-# (single file) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data/test1.py jstubbs/pypkgs
-# (directory) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data jstubbs/pypkgs
-
+# (single file) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data/test1.py jstubbs/pypkgspy2
+# (directory) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data jstubbs/pypkgspy2
+# docker run -it --rm -v /home/jstubbs/Documents/jupyter/nheri_ipynbs_analysis/nheri_published_ipynbs:/data -v $(pwd)/.agpy:/etc/.agpy -e dry_run=true -e path=/data  jstubbs/pypkgspy2
+#
+# Analyze all py2 nbs:
+# docker run -it --rm -v /home/jstubbs/Documents/jupyter/nheri_ipynbs_analysis/nheri_published_ipynbs/py2:/data -e path=/data jstubbs/pypkgspy2
 
 from taccsciapps/jupyteruser-ds:1.2.24
 

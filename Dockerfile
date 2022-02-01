@@ -6,6 +6,9 @@
 # convert a directory of .ipynb files to .py files using nbconvert:
 # docker run -it --rm -v /home/jstubbs/Documents/jupyter/nheri_ipynbs_analysis/nheri_published_ipynbs:/data -v $(pwd)/.agpy:/etc/.agpy -e dry_run=true -e convert=true -e path=/data  jstubbs/pypkgs
 # docker run -it --rm -v /$(pwd)/testfiles:/data -v $(pwd)/.agpy:/etc/.agpy -e dry_run=true -e convert=true -e path=/data  jstubbs/pypkgs
+#
+# Analyze all py3 nbs:
+# docker run -it --rm -v /home/jstubbs/Documents/jupyter/nheri_ipynbs_analysis/nheri_published_ipynbs/py3:/data -e path=/data jstubbs/pypkgs
 
 from taccsciapps/jupyteruser-ds:1.2.24
 
