@@ -3,6 +3,9 @@ import json
 import sys
 from modulefinder import ModuleFinder
 from stdlib_list import stdlib_list
+import subprocess
+from sysconfig import get_python_version
+
 
 # todo -- needs to use the specific version of python that the nb file was using...
 std_libs = stdlib_list("3.7")
@@ -12,13 +15,58 @@ def load_nb_json(path):
     return json.load(open(path, 'r'))
 
 
-def get_nb_python_version(nb_json):
-    kernel = nb_json["metadata"]["kernelspec"]
+def get_nb_python_version(nb_json, path):
+    try:
+        kernel = nb_json["metadata"]["kernelspec"]
+    except:
+        print(f"Notebook file {path} did not have a kernel.")
+        return 'none'
     if '3' in kernel.get('name') or '3' in kernel.get('language') or '3' in kernel.get('display_name'):
         return 'python3'
     else:
         return 'python2'
 
+
+def convert_notebooks():
+    path = get_path()
+    nb_stats = {'python2': 0, 'python3': 0, 'none': 0}
+    # can set to do a dry run
+    dry_run = 'dry_run' in os.environ.keys()
+    if dry_run:
+        print("dry run... only printing stats")
+    if not os.path.isdir(path):
+        print(f"path {path} should be a directory...")
+        sys.exit()
+    print(f"converting notebooks at path, {path}")
+    for p in os.listdir(path):
+        # only parse ipynb files
+        if not p.endswith('.ipynb'):
+            continue
+        full_path = os.path.join(path, p)
+        nb_json = load_nb_json(full_path)
+        version = get_nb_python_version(nb_json, p)
+        nb_stats[version] += 1
+        if dry_run:
+            continue
+        # TODO Remove -------------------
+        if ' ' not in p:
+            continue
+        # -------------------------------
+        # convert notebook using nbcovert; handle files with spaces in the names
+        outdir = '/data/output'
+        if version == 'python2':
+            outdir = '/data/py2'
+        elif version == 'python3':
+            outdir = '/data/py3'
+        cmd = ['jupyter-nbconvert', '--to', 'script', f"{full_path}", '--output-dir', outdir]
+        print(f"command: {cmd}")
+        try:
+            subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
+            print(f"{p} converted with exit code 0.")
+        except subprocess.CalledProcessError:
+            print(f"ERROR on {p} (non-zero exit code).")
+    print("final nb stats: ")
+    print(nb_stats)
 
 
 def get_path():
@@ -79,7 +127,7 @@ def print_mods(modules, pth):
         print(name)
 
 
-def main():
+def compute_packages():
     paths_processed = []
     pth = get_path()
     if not os.path.isdir(pth):
@@ -110,6 +158,15 @@ def main():
     print('\nExternal Modules:')
     for mod, ct in ext_mod_cts.items():
         print(mod, ct)
+
+
+def main():
+    convert_nbs = 'convert' in os.environ.keys()
+    if convert_nbs:
+        convert_notebooks()
+    else:
+        compute_packages()
+
 
 if __name__ == "__main__":
     main()
