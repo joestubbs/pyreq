@@ -48,9 +48,6 @@ def convert_notebooks():
         nb_stats[version] += 1
         if dry_run:
             continue
-        # TODO Remove -------------------
-        if ' ' not in p:
-            continue
         # -------------------------------
         # convert notebook using nbcovert; handle files with spaces in the names
         outdir = '/data/output'
@@ -149,6 +146,7 @@ def compute_packages():
             mods, ext_mods, error = get_mods_for_file(os.path.join(pth, p), paths_processed)
             if error:
                 errors[p] = error
+                continue
             total_no_errors += 1
             for name in mods:
                 if name not in mod_cts.keys():
