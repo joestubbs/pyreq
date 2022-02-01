@@ -3,6 +3,7 @@
 # (single file) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data/test1.py jstubbs/pypkgs
 # (directory) docker run -it --rm -v $(pwd)/testfiles:/data -e path=/data jstubbs/pypkgs
 #
+# convert a directory of .ipynb files to .py files using nbconvert:
 # docker run -it --rm -v /home/jstubbs/Documents/jupyter/nheri_ipynbs_analysis/nheri_published_ipynbs:/data -v $(pwd)/.agpy:/etc/.agpy -e dry_run=true -e convert=true -e path=/data  jstubbs/pypkgs
 # docker run -it --rm -v /$(pwd)/testfiles:/data -v $(pwd)/.agpy:/etc/.agpy -e dry_run=true -e convert=true -e path=/data  jstubbs/pypkgs
 
