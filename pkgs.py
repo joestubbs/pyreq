@@ -93,10 +93,10 @@ def get_mods_for_file(path, paths_processed):
         finder.run_script(path)
     except SyntaxError as e:
         print(f"ERROR: Could not parse python file at path: {path}; Syntax error: {e}. Check the python version.\n")
-        return modules, ext_modules
+        return modules, ext_modules, f"Syntax error: {e}"
     except Exception as e:
         print(f"ERROR: Got exception trying to parse path {path}; error: {e}; skipping...\n")
-        return modules, ext_modules
+        return modules, ext_modules, f"Unknown error: {e}"
 
     for name, mod in finder.modules.items():
         if name.startswith('_'):
@@ -119,7 +119,7 @@ def get_mods_for_file(path, paths_processed):
         ext_modules.add(name)
     
     paths_processed.append(path)
-    return modules, ext_modules
+    return modules, ext_modules, False
 
 
 def print_mods(modules, pth):
@@ -131,7 +131,7 @@ def compute_packages():
     paths_processed = []
     pth = get_path()
     if not os.path.isdir(pth):
-        modules, ext_modules = get_mods_for_file(pth, paths_processed)
+        modules, ext_modules, error = get_mods_for_file(pth, paths_processed)
         print(f'3rd-party packages that are installed AND used in {pth}:')
         print_mods(modules, pth)
         print("\nExternal modules:")
@@ -140,11 +140,16 @@ def compute_packages():
     # input was a dir..
     mod_cts = {}
     ext_mod_cts = {}
+    errors = {} # path: "error msg"
+    total_no_errors = 0
     for p in os.listdir(pth):
         # ignore all non- .py files...        
         if p.endswith('.py'):
-            mods, ext_mods = get_mods_for_file(os.path.join(pth, p), paths_processed)
-            print("Known Modules:")
+            print(f"Computing packages for {p}...")
+            mods, ext_mods, error = get_mods_for_file(os.path.join(pth, p), paths_processed)
+            if error:
+                errors[p] = error
+            total_no_errors += 1
             for name in mods:
                 if name not in mod_cts.keys():
                     mod_cts[name] = 0
@@ -153,11 +158,30 @@ def compute_packages():
                 if name not in ext_mod_cts.keys():
                     mod_cts[name] = 0
                 mod_cts[name] += 1
+    total_files = total_no_errors + len(errors.keys())
+    total_with_errors = len(errors.keys())
+    total_packages_found = len(mod_cts.keys())
+    print('*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  ')
+    print("\nTotals:")
+    print("-------")
+    print(f"Total files processed: {total_files}")
+    print(f"Files processed without errors: {total_no_errors}")
+    print(f"Files processed with errors: {total_with_errors}")
+    print(f'Total unique packages found: {total_packages_found}')
+    print("\nAll known modules, with counts of notebooks using them")
+    print('------------------------------------------------------')
     for mod, ct in mod_cts.items():
         print(mod, ct)
-    print('\nExternal Modules:')
+    print(f'\nAll external Modules:')
+    print('-----------------------')
+    if len(ext_mod_cts.keys()) == 0:
+        print("None found.")
     for mod, ct in ext_mod_cts.items():
         print(mod, ct)
+    print("\nAll Notebooks with Errors:")
+    print('--------------------------')
+    for path, error in errors.items():
+        print(f"{path}: {error}")
 
 
 def main():
