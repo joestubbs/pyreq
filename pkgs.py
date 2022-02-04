@@ -108,9 +108,9 @@ def get_mods_for_file(path, paths_processed):
             continue
         if x in std_libs:
             continue
-        if x in modules:
-            continue
         name = x.split('.')[0]
+        if name in modules:
+            continue
         if name in std_libs:
             continue
         ext_modules.add(name)
