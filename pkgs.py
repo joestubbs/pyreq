@@ -73,8 +73,6 @@ def get_path():
         print("Set the $path variable...")
         sys.exit()
     return path
-    os.environ.get('files_list.txt')
-    os.environ.get('checkpoint_file')
 
 
 def get_mods_for_file(path, paths_processed):
@@ -154,8 +152,8 @@ def compute_packages():
                 mod_cts[name] += 1
             for name in ext_mods:
                 if name not in ext_mod_cts.keys():
-                    mod_cts[name] = 0
-                mod_cts[name] += 1
+                    ext_mod_cts[name] = 0
+                ext_mod_cts[name] += 1
     total_files = total_no_errors + len(errors.keys())
     total_with_errors = len(errors.keys())
     total_packages_found = len(mod_cts.keys())
@@ -168,7 +166,8 @@ def compute_packages():
     print(f'Total unique packages found: {total_packages_found}')
     print("\nAll known modules, with counts of notebooks using them")
     print('------------------------------------------------------')
-    for mod, ct in mod_cts.items():
+    sorted_mod_cts = dict(sorted(mod_cts.items(), key=lambda item: item[1],reverse=True))
+    for mod, ct in sorted_mod_cts.items():
         print(mod, ct)
     print(f'\nAll external Modules:')
     print('-----------------------')
